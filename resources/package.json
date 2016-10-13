@@ -1,5 +1,5 @@
 {
-  "name": "bulko_7agagner_201610",
+  "name": "weborama",
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
@@ -16,12 +16,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Bulko/bulko_7agagner_201610.git"
+    "url": "git+https://github.com/Jiedara/weborama.git"
   },
   "author": "Jiedara",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Bulko/bulko_7agagner_201610/issues"
+    "url": "https://github.com/Jiedara/weborama/issues"
   },
-  "homepage": "https://github.com/Bulko/bulko_7agagner_201610#readme"
+  "homepage": "https://github.com/Jiedara/weborama#readme"
 }
