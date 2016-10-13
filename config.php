@@ -17,7 +17,7 @@ define('DB_TYPE','mysql');
 define('DB_HOST','localhost');
 
 /*- Name of the database -*/
-define('DB_NAME','bulko_7agagner_201610');
+define('DB_NAME','weborama');
 
 /*- Prefix of the database tables -*/
 define('DB_PREFIX','');
@@ -40,7 +40,7 @@ define('DB_PASS','');
 */
 
 /*- Password of the database -*/
-define('SITE_URL','localhost/bulko_7agagner_201610');
+define('SITE_URL','localhost/weborama');
 
 /*- choose beetween 3 debug lvl (0=none, 1=error viewing, 2=dev information) -*/
 define('DEBUG_LVL','2');
