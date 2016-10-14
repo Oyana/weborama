@@ -32,10 +32,10 @@ switch(DEBUG_LVL){
 
 function debug($message){
 	if(DEBUG_LVL > 0){
-		echo '<pre>';
-		print_r($message);
-		echo '</pre>';
-		die();
+	echo '<pre>';
+	print_r($message);
+	echo '</pre>';
+	die();
 	}else {
 		return true;
 	}
