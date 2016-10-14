@@ -8,6 +8,10 @@ function route($routename){
 	return SITE_URL . '/' . $routename;
 }
 
+function redirect($routename) {
+	header('location:'.SITE_URL . '/' . $routename);
+}
+
 /*
 |-------------------------------------------------------
 | Handle Routes
@@ -25,7 +29,7 @@ if(isset($_SERVER['HTTPS'])){
 }else {
 	$http = 'http://';
 }
-$current_route = str_replace(SITE_URL, '', $http . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+$current_route = str_replace(SITE_URL, '', $http . $_SERVER["HTTP_HOST"] . strtok($_SERVER["REQUEST_URI"],'?'));
 
 //display error or 404 if the route is not defined
 if(isset($routes[$current_route])){
@@ -35,16 +39,40 @@ if(isset($routes[$current_route])){
 	$controllerName = ucfirst($controller);
 	$method = explode('@',$routes[$current_route])[1];
 
-	//handle resource
-	require_once(dirname(__FILE__) . '/../../controllers/' . $controller . '.php');
-	$controllerName = new $controller;
+	//handle resource & autoload
+	include(ROOT_PATH . '/models/Model.php');
+	include(ROOT_PATH . '/controllers/Controller.php');
+	spl_autoload_register(function ($class) {
+		$classParts = explode("\\", $class);
+		$classLength = count($classParts);
+		$className = $classParts[$classLength - 1];
+
+		$namespace = 'controllers';
+		if(strpos($class, 'Controller') == false){
+			$namespace = 'models';
+		}
+
+		for ($i = 1; $i < $classLength - 1; $i++) {
+			$namespace .= '/' . $classParts[$i];
+		}
+
+		if ( file_exists(ROOT_PATH . '/' . $namespace . '/' . $className . '.php') ) {
+			include ROOT_PATH . '/' . $namespace . '/' . $className . '.php';
+		}
+	});
+	$controllerName = new $controllerName;
+
+	//handle POST & GET request
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		$method = 'Post' . $method;
+	}
 	$controllerName->$method();
 
 }else {
 
 	if(DEBUG_LVL > 0){
 
-		debug("Aucune route n'est définie sur $current_route");
+		debug("No route found on $current_route");
 
 	}else{
 
