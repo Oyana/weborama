@@ -1,4 +1,13 @@
 <?php
+
+function asset($url){
+	return SITE_URL . '/public/' . $url;
+}
+
+function route($routename){
+	return SITE_URL . '/' . $routename;
+}
+
 /*
 |-------------------------------------------------------
 | Handle Routes
@@ -11,7 +20,12 @@
 */
 
 //get current route name by parsing current request with SITE_URL
-$current_route = str_replace(SITE_URL, '', $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+if(isset($_SERVER['HTTPS'])){
+	$http = 'https://';
+}else {
+	$http = 'http://';
+}
+$current_route = str_replace(SITE_URL, '', $http . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
 
 //display error or 404 if the route is not defined
 if(isset($routes[$current_route])){
