@@ -16,5 +16,5 @@ require_once('routes.php');
 
 $files = glob(__DIR__ . '/framework/*/index.php');
 foreach($files as $file){
-	include($file);
+	include $file;
 }
