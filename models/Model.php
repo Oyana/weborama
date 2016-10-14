@@ -5,10 +5,11 @@
  * @package 7agagner
  * @subpackage models
  */
+
 class Model
 {
 	protected $db;
-	protected $id_key;
+	protected $rows;
 	protected $table;
 	protected $lastQuery;
 	protected $lastInsertId;
@@ -19,23 +20,23 @@ class Model
 	 * @since 0.2
 	 * @param	object		$db
 	 */
-	public function __construct( $id_key, $table )
+	public function __construct( $table )
 	{
 		try // PDO Connection
 		{
 			$db = new PDO( DB_TYPE . ":host=" . DB_HOST ."; dbname=" . DB_NAME . ";", DB_USER, DB_PASS );
+    		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$db->exec("set names utf8");
 		}
 		catch( PDOException $e )
 		{
-			if ( DEV_MOD )
+			if ( DEBUG_LVL > 0 )
 			{
 				echo $e->getMessage();
 			}
 		}
 
 		$this->db = $db;
-		$this->id_key = $id_key;
 		$this->table = $table;
 		return true;
 	}
@@ -69,11 +70,8 @@ class Model
 		$value = "VALUES (";
 		foreach ($array as $k => $v)
 		{
-			if ( $k != $this->id_key)
-			{
-				$format .= "`" . $k . "`, ";
-				$value .= $this->db->quote( $v ) . ", ";
-			}
+			$format .= "`" . $k . "`, ";
+			$value .= $this->db->quote( $v ) . ", ";
 		}
 		$query .= rtrim( $format, ", " ) . ") ". rtrim( $value, ", " ) . ");";
 		$this->db->exec( $query );
@@ -219,5 +217,90 @@ class Model
 		$str = preg_replace('#[^0-9a-z]+#i', '-', $str);
 		$str = trim($str, '-');
 		return $str;
+	}
+
+	public function validate($datas){
+		foreach ($datas as $key => $data){
+			//parse and get current data validation rule
+			//$rules[0] = type of the data
+			//$rules[1] = range of the data (size if one number, possible value if more), -1 mean 'nullable' and therefore, the data may be empty
+			$rules = explode('|', $this->rows[$key]);
+			if(!empty($data) || (string)$data === '0'){
+				switch ($rules[0]){
+					case 'string':
+					case 'text':
+						if(!is_string($data)){
+							$error = "The field `" . $key . "` is not a text.";
+						}
+					break;
+					case 'date':
+						$d = DateTime::createFromFormat('Y-m-d H:i:s', $data);
+						if(empty($d) || $d->format('Y-m-d H:i:s') != $data){
+							$error = "The field `" . $key . "` is not a valid date.";
+						}
+					break;
+					case 'int':
+						if(intval($data) != (int)$data){
+							$error = "The field `" . $key . "` is not a number.";
+						}
+					break;
+					case 'slug':
+						if(!preg_match('/^[a-z0-9][-a-z0-9]*$/', $data)){
+							$error = "The field `" . $key . "` must not have any special character, accent or space.";
+						}
+					break;
+					case 'array':
+						if(!is_array($data)){
+							$error = "The field `" . $key . "` must be un tableau de valeur valid.";
+						}
+					break;
+					case 'email':
+						if (filter_var($data, FILTER_VALIDATE_EMAIL) === false) {
+							$error = "The field `" . $key . "` must be a valid email";
+						}
+					break;
+					case 'url':
+						if(filter_var($data, FILTER_VALIDATE_URL) === false){
+							$error = "The field `" . $key . "` must be a valid URL";
+						}
+					break;
+					default:
+						$error = "The field `" . $key . "` was not understanded and wasn't validated.";
+					break;
+				}
+				//check if input intervalidate (input1 is mandatory only without input2 for exemple)
+				if(in_array($rules[1],array_keys($this->rows))){
+					if(!empty($datas[$rules[1]]) && !empty($data)){
+						$error = "The field `" . $key . "` must be empty if the field `". $this->RowsRealName($rules[1]) ."` is filled.";
+					}
+				}
+				elseif($rules[0] == 'int') {
+					if(sizeof(explode(',',$rules[1])) > 1){
+						if( !in_array($data, explode(',',$rules[1]))){
+							$error = "The field `" . $key . "` must be in ". $rules[1] .".";
+						}
+					}else {
+						if($rules[1] != -1 && sizeof($data) > $rules[1] && sizeof($rules[1]) > 0){
+							$error = "The field `" . $key . "` must be less that ". $rules[1] .".";
+						}
+					}
+				}
+				elseif($rules[1] != -1 && sizeof($data) > $rules[1] && sizeof($rules[1]) > 0){
+					$error = "The field `" . $key . "` must have less than ". $rules[1] ." character.";
+				}
+			}
+			elseif($rules[1] != -1 && !in_array($rules[1],array_keys($this->rows))) {
+				$error = "The field `" . $key . "` is mandatory.";
+			}elseif(in_array($rules[1],array_keys($this->rows))){
+				if(empty($datas[$rules[1]]) && empty($data)){
+					$error = "At least one of the field `" . $key . "` or `" . $rules[1] . "` is mandatory.";
+				}
+			}
+		}
+		if(isset($error)){
+			return $error;
+		}else {
+			return true;
+		}
 	}
 }
