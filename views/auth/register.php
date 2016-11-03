@@ -1,3 +1,7 @@
+<?php
+view('includes/header');
+?>
+
 <div class="container">
 	<div class="row">
 		<div class="col-sm-6 col-md-4 col-md-offset-4">
@@ -17,3 +21,6 @@
 		</div>
 	</div>
 </div>
+
+<?php
+view('includes/footer');
