@@ -16,16 +16,16 @@ class UserController extends Controller
 		return view('auth/login');
 	}
 
-	public function Postlogin(){
+	public function postLogin(){
 		$datas = $_POST;
 		$user = new User();
 		if(!$user->validate($datas)){
 			$this->setError('Email or password invalid.');
 			return $this->login();
-		}elseif(sizeof($user->getByWhere(['email'=>'"'.$datas['email'].'"','password' => '"' . md5($datas['password']) . '"'])) == 1){
+		}elseif(sizeof($user->getByWhere([ 'email'=> $datas['email'], 'password' => md5($datas['password']) ])) == 1){
 			$_SESSION['user'] = $datas['email'];
 			$this->setSuccess('Connected to your account');
-			return $this->account();
+			return redirect('auth/account');
 		}else {
 			$this->setError('Email or password unknown.');
 			return $this->login();
@@ -36,14 +36,14 @@ class UserController extends Controller
 		return view('auth/register');
 	}
 
-	public function Postregister(){
+	public function postRegister(){
 		$datas = $_POST;
 		$user = new User();
 		$validation = $user->validate($datas);
 		if($validation){
 			if($datas['password'] == $datas['validatepassword']){
 				if(sizeof($user->getByWhere(['email'=>$datas['email']])) == 0){
-					$user->addByarray(['email'=>$datas['email'],'password'=>md5($datas['password'])]);
+					$user->addByarray(['email'=>$datas['email'],'pseudo'=>$datas['email'],'password'=>md5($datas['password'])]);
 					$this->setSuccess('Account created');
 					$_SESSION['user'] = $datas['email'];
 					return redirect('auth/account');
@@ -62,15 +62,16 @@ class UserController extends Controller
 	}
 
 	public function logout(){
-
+		unset($_SESSION['user']);
+		$this->setInfo('Logout succesfully');
+		return redirect('');
 	}
 
 	public function account(){
 		if(!isset($_SESSION['user'])){
-			return $this->login();
+			redirect('auth/login');
 		}else {
-			return view('auth/account', array('email' => $_SESSION['user']));
+			return redirect('admin52397');
 		}
 	}
-
 }
