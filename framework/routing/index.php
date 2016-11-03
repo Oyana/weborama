@@ -4,11 +4,18 @@ function asset($url){
 	return SITE_URL . '/public/' . $url;
 }
 
+function stored($url){
+	return SITE_URL . '/storage/' . $url;
+}
+
 function route($routename){
 	return SITE_URL . '/' . $routename;
 }
 
-function redirect($routename) {
+function redirect($routename, $savedDatas = array()) {
+	if(!empty($savedDatas)){
+		$_SESSION['redirect'] = $savedDatas;
+	}
 	header('location:'.SITE_URL . '/' . $routename);
 }
 
@@ -22,7 +29,8 @@ function redirect($routename) {
 | automatically the required controller and call it.
 |
 */
-
+//init $_SERVER variable to prevent very rare undefined case...
+$_SERVER;
 //get current route name by parsing current request with SITE_URL
 if(isset($_SERVER['HTTPS'])){
 	$http = 'https://';
@@ -64,9 +72,17 @@ if(isset($routes[$current_route])){
 
 	//handle POST & GET request
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$method = 'Post' . $method;
+		$method = 'post' . ucfirst($method);
 	}
-	$controllerName->$method();
+
+	//load & unset potential redirected datas
+	if(isset($_SESSION['redirect'])){
+		$datas = $_SESSION['redirect'];
+		unset($_SESSION['redirect']);
+		$controllerName->$method($datas);
+	}else {
+		$controllerName->$method();
+	}
 
 }else {
 
