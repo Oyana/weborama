@@ -13,6 +13,8 @@ class Model
 	protected $table;
 	protected $lastQuery;
 	protected $lastInsertId;
+	protected $orderBy;
+	protected $select = '*';
 
 	/**
 	 * __construct Model
@@ -24,7 +26,8 @@ class Model
 	{
 		try // PDO Connection
 		{
-			$db = new PDO( DB_TYPE . ":host=" . DB_HOST ."; dbname=" . DB_NAME . ";", DB_USER, DB_PASS );
+			$dsn = "" . DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME . "";
+			$db = new PDO($dsn, DB_USER, DB_PASS);
     		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$db->exec("set names utf8");
 		}
@@ -32,7 +35,10 @@ class Model
 		{
 			if ( DEBUG_LVL > 0 )
 			{
+				echo '<pre>';
 				echo $e->getMessage();
+				echo '</pre>';
+				die();
 			}
 		}
 
@@ -96,12 +102,25 @@ class Model
 		$format = '';
 		foreach ($array as $k => $v)
 		{
-			if ( $k != $this->id_key)
-			{
-				$format .= "`" . $k . "` = " . $this->db->quote( $v ) . ", ";
-			}
+			$format .= "`" . $k . "` = " . $this->db->quote( $v ) . ", ";
 		}
-		$query .= rtrim( $format, ", " ) . " WHERE ". $this->id_key . " = " . $id;
+		$query .= rtrim( $format, ", " ) . " WHERE id = " . $id;
+		$this->db->exec( $query );
+		$this->lastQuery = $query;
+		return true;
+	}
+
+	/**
+	 * delete
+	 *
+	 * @author Jiedara
+	 * @since 0.3
+	 * @param integer $id
+	 * @return boolean
+	*/
+	public function delete( $id )
+	{
+		$query = "DELETE FROM " . DB_PREFIX . $this->table . " WHERE id = " . $id;
 		$this->db->exec( $query );
 		$this->lastQuery = $query;
 		return true;
@@ -142,9 +161,41 @@ class Model
 		return $this->db->debugDumpParams();
 	}
 
+	/**
+	 * setOrderBy
+	 *
+	 * @author Jiedara
+	 * @since 0.3
+	 * @param string
+	 * @return Object
+	*/
+	public function setOrderBy($orderBy)
+	{
+		$this->orderBy = $orderBy;
+		return $this;
+	}
+
+	/**
+	 * setSelect
+	 *
+	 * @author Jiedara
+	 * @since 0.3
+	 * @param string
+	 * @return Object
+	*/
+	public function setSelect($select)
+	{
+		$this->select = $select;
+		return $this;
+	}
+
 	public function getAll()
 	{
-		$statement = $this->db->prepare("SELECT * FROM " . DB_PREFIX . $this->table . ";");
+		if(isset($this->orderBy)){
+			$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . " ORDER BY ". $this->orderBy .";");
+		}else {
+			$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . ";");
+		}
 		$statement->execute();
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $data;
@@ -152,7 +203,7 @@ class Model
 
 	public function getById( $id )
 	{
-		$statement = $this->db->prepare("SELECT * FROM " . DB_PREFIX . $this->table . "  WHERE `" . $this->id_key . "` = " . $id . ";");
+		$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . "  WHERE `" . $this->id_key . "` = " . $id . ";");
 		$statement->execute();
 		$data = $statement->fetch(PDO::FETCH_ASSOC);
 		return $data;
@@ -173,12 +224,11 @@ class Model
 			$whereData = " 1";
 			foreach ($where as $key => $value)
 			{
-				$whereData = $whereData . " AND " . $key . "=" . $value;
+				$whereData = $whereData . " AND " . $key . " = '" . $value . "'";
 			}
 			$whereData = $whereData . " ; ";
 		}
-
-		$statement = $this->db->prepare("SELECT * FROM " . DB_PREFIX . $this->table . "  WHERE " . $whereData);
+		$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . "  WHERE " . $whereData);
 		$statement->execute();
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $data;
@@ -224,8 +274,8 @@ class Model
 			//parse and get current data validation rule
 			//$rules[0] = type of the data
 			//$rules[1] = range of the data (size if one number, possible value if more), -1 mean 'nullable' and therefore, the data may be empty
-			$rules = explode('|', $this->rows[$key]);
-			if(!empty($data) || (string)$data === '0'){
+			if((!empty($data) || (string)$data === '0') && isset($this->rows[$key])){
+				$rules = explode('|', $this->rows[$key]);
 				switch ($rules[0]){
 					case 'string':
 					case 'text':
@@ -269,12 +319,12 @@ class Model
 					break;
 				}
 				//check if input intervalidate (input1 is mandatory only without input2 for exemple)
-				if(in_array($rules[1],array_keys($this->rows))){
+				if(isset($rules[1]) && in_array($rules[1],array_keys($this->rows))){
 					if(!empty($datas[$rules[1]]) && !empty($data)){
 						$error = "The field `" . $key . "` must be empty if the field `". $this->RowsRealName($rules[1]) ."` is filled.";
 					}
 				}
-				elseif($rules[0] == 'int') {
+				elseif(isset($rules[1]) && $rules[0] == 'int') {
 					if(sizeof(explode(',',$rules[1])) > 1){
 						if( !in_array($data, explode(',',$rules[1]))){
 							$error = "The field `" . $key . "` must be in ". $rules[1] .".";
@@ -285,13 +335,13 @@ class Model
 						}
 					}
 				}
-				elseif($rules[1] != -1 && sizeof($data) > $rules[1] && sizeof($rules[1]) > 0){
+				elseif(isset($rules[1]) && $rules[1] != -1 && sizeof($data) > $rules[1] && sizeof($rules[1]) > 0){
 					$error = "The field `" . $key . "` must have less than ". $rules[1] ." character.";
 				}
 			}
-			elseif($rules[1] != -1 && !in_array($rules[1],array_keys($this->rows))) {
+			elseif(isset($rules[1]) && $rules[1] != -1 && !in_array($rules[1],array_keys($this->rows))) {
 				$error = "The field `" . $key . "` is mandatory.";
-			}elseif(in_array($rules[1],array_keys($this->rows))){
+			}elseif(isset($rules[1]) && in_array($rules[1],array_keys($this->rows))){
 				if(empty($datas[$rules[1]]) && empty($data)){
 					$error = "At least one of the field `" . $key . "` or `" . $rules[1] . "` is mandatory.";
 				}
