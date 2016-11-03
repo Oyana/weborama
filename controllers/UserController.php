@@ -71,7 +71,7 @@ class UserController extends Controller
 		if(!isset($_SESSION['user'])){
 			redirect('auth/login');
 		}else {
-			return redirect('admin52397');
+			redirect('auth/account');
 		}
 	}
 }
