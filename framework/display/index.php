@@ -19,7 +19,6 @@ function view($view_name, $formatedData = array()){
 
 	if(file_exists(ROOT_PATH . '/views/' . $view_name . '.php')){
 		include(ROOT_PATH . '/views/' . $view_name . '.php');
-		return true;
 	}else {
 		debug('No view found at ' . ROOT_PATH . '/views/' . $view_name . '.php' );
 		return false;
