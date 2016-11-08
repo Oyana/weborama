@@ -1,6 +1,9 @@
 <?php
-
 include('config.php');
+
+session_name(APP_NAME);
+session_start();
+
 require_once('routes.php');
 
 /*
@@ -14,7 +17,22 @@ require_once('routes.php');
 |
 */
 
+//load these files first
+require_once __DIR__ . '/framework/debugging/index.php';
+require_once __DIR__ . '/framework/helpers/index.php';
+
+//load other folders
 $files = glob(__DIR__ . '/framework/*/index.php');
-foreach($files as $file){
-	include $file;
+
+//remove routing from autoload (to call it last)
+if(($key = array_search(__DIR__ . '/framework/routing/index.php', $files)) !== false) {
+    unset($files[$key]);
 }
+
+//autoload
+foreach($files as $file){
+	require_once $file;
+}
+
+//launch routing
+require_once __DIR__ . '/framework/routing/index.php';
