@@ -9,6 +9,7 @@
 class Model
 {
 	protected $db;
+	protected $pdo;
 	protected $rows;
 	protected $table;
 	protected $lastQuery;
@@ -24,12 +25,31 @@ class Model
 	 */
 	public function __construct( $table )
 	{
+		//set database value (use constant or forced value in the model)
+		if(!isset($this->db['type'])){
+			$this->db['type'] = DB_TYPE;
+		}
+		if(!isset($this->db['host'])){
+			$this->db['host'] = DB_HOST;
+		}
+		if(!isset($this->db['name'])){
+			$this->db['name'] = DB_NAME;
+		}
+		if(!isset($this->db['user'])){
+			$this->db['user'] = DB_USER;
+		}
+		if(!isset($this->db['pass'])){
+			$this->db['pass'] = DB_PASS;
+		}
+		if(!isset($this->db['prefix'])){
+			$this->db['prefix'] = DB_PREFIX;
+		}
 		try // PDO Connection
 		{
-			$dsn = "" . DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME . "";
-			$db = new PDO($dsn, DB_USER, DB_PASS);
-    		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$db->exec("set names utf8");
+			$dsn = "" . $this->db['type']. ':host=' . $this->db['host']. ';dbname=' . $this->db['name']. "";
+			$pdo = new PDO($dsn, $this->db['user'], $this->db['pass']);
+    		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$pdo->exec("set names utf8");
 		}
 		catch( PDOException $e )
 		{
@@ -42,7 +62,7 @@ class Model
 			}
 		}
 
-		$this->db = $db;
+		$this->pdo = $pdo;
 		$this->table = $table;
 		return true;
 	}
@@ -57,7 +77,7 @@ class Model
 	*/
 	public function __destruct()
 	{
-		unset($this->db);
+		unset($this->pdo);
 		return true;
 	}
 
@@ -71,19 +91,19 @@ class Model
 	*/
 	public function addByArray( $array )
 	{
-		$query = "INSERT INTO " . DB_PREFIX . $this->table . " ";
+		$query = "INSERT INTO " . $this->db['prefix'] . $this->table . " ";
 		$format = "(";
 		$value = "VALUES (";
 		foreach ($array as $k => $v)
 		{
 			$format .= "`" . $k . "`, ";
-			$value .= $this->db->quote( $v ) . ", ";
+			$value .= $this->pdo->quote( $v ) . ", ";
 		}
 		$query .= rtrim( $format, ", " ) . ") ". rtrim( $value, ", " ) . ");";
-		$this->db->exec( $query );
+		$this->pdo->exec( $query );
 		$this->lastQuery = $query;
 
-		$this->lastInsertId = $this->db->lastInsertId();
+		$this->lastInsertId = $this->pdo->lastInsertId();
 		return true;
 	}
 
@@ -98,14 +118,14 @@ class Model
 	*/
 	public function updateByArray( $id, $array )
 	{
-		$query = "UPDATE " . DB_PREFIX . $this->table . " SET ";
+		$query = "UPDATE " . $this->db['prefix'] . $this->table . " SET ";
 		$format = '';
 		foreach ($array as $k => $v)
 		{
-			$format .= "`" . $k . "` = " . $this->db->quote( $v ) . ", ";
+			$format .= "`" . $k . "` = " . $this->pdo->quote( $v ) . ", ";
 		}
 		$query .= rtrim( $format, ", " ) . " WHERE id = " . $id;
-		$this->db->exec( $query );
+		$this->pdo->exec( $query );
 		$this->lastQuery = $query;
 		return true;
 	}
@@ -120,8 +140,8 @@ class Model
 	*/
 	public function delete( $id )
 	{
-		$query = "DELETE FROM " . DB_PREFIX . $this->table . " WHERE id = " . $id;
-		$this->db->exec( $query );
+		$query = "DELETE FROM " . $this->db['prefix'] . $this->table . " WHERE id = " . $id;
+		$this->pdo->exec( $query );
 		$this->lastQuery = $query;
 		return true;
 	}
@@ -141,7 +161,7 @@ class Model
 		{
 			return $this->lastInsertId;
 		}
-		return $this->db->lastInsertId();
+		return $this->pdo->lastInsertId();
 	}
 
 	/**
@@ -158,7 +178,7 @@ class Model
 		{
 			return $this->lastQuery;
 		}
-		return $this->db->debugDumpParams();
+		return $this->pdo->debugDumpParams();
 	}
 
 	/**
@@ -192,9 +212,9 @@ class Model
 	public function getAll()
 	{
 		if(isset($this->orderBy)){
-			$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . " ORDER BY ". $this->orderBy .";");
+			$statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . " ORDER BY ". $this->orderBy .";");
 		}else {
-			$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . ";");
+			$statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . ";");
 		}
 		$statement->execute();
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -203,7 +223,7 @@ class Model
 
 	public function getById( $id )
 	{
-		$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . "  WHERE `" . $this->id_key . "` = " . $id . ";");
+		$statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . "  WHERE `" . $this->id_key . "` = " . $id . ";");
 		$statement->execute();
 		$data = $statement->fetch(PDO::FETCH_ASSOC);
 		return $data;
@@ -228,7 +248,7 @@ class Model
 			}
 			$whereData = $whereData . " ; ";
 		}
-		$statement = $this->db->prepare("SELECT ". $this->select ." FROM " . DB_PREFIX . $this->table . "  WHERE " . $whereData);
+		$statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . "  WHERE " . $whereData);
 		$statement->execute();
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $data;
