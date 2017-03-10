@@ -13,6 +13,7 @@ class PageController extends Controller
 	}
 
 	public function home(){
+		debug('plop',$this,['one','two','three']);
 		return view('home');
 	}
 }
