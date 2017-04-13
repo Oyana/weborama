@@ -18,14 +18,14 @@ require_once('routes.php');
 */
 
 //load these files first
-require_once __DIR__ . '/framework/debugging/index.php';
-require_once __DIR__ . '/framework/helpers/index.php';
+require_once __DIR__ . '/framework/debugging/Debug.php';
+require_once __DIR__ . '/framework/helpers/Helpers.php';
 
 //load other folders
-$files = glob(__DIR__ . '/framework/*/index.php');
+$files = glob(__DIR__ . '/framework/*/*.php');
 
 //remove routing from autoload (to call it last)
-if(($key = array_search(__DIR__ . '/framework/routing/index.php', $files)) !== false) {
+if(($key = array_search(__DIR__ . '/framework/routing/Routing.php', $files)) !== false) {
     unset($files[$key]);
 }
 
@@ -35,4 +35,4 @@ foreach($files as $file){
 }
 
 //launch routing
-require_once __DIR__ . '/framework/routing/index.php';
+require_once __DIR__ . '/framework/routing/Routing.php';

@@ -10,7 +10,6 @@
 |
 */
 
-
 error_reporting(0);
 switch(DEBUG_LVL){
 	case 0:
@@ -35,7 +34,7 @@ function debug(){
 	if(DEBUG_LVL > 0){
 		//display a nicely designed accordeon debugging
 		node(func_get_args());
-	die();
+		die();
 	}else {
 		return true;
 	}
