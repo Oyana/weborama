@@ -30,6 +30,7 @@ switch(DEBUG_LVL){
 	break;
 }
 
+//Display in a tree all argument you pass to it. You can pass as many argument as you want.
 function debug(){
 	if(DEBUG_LVL > 0){
 		//display a nicely designed accordeon debugging

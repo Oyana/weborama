@@ -9,6 +9,11 @@
 |
 */
 
+/* 
+Include the wanted view, that's located inside the `/views` directory.
+You can pass some datas to it.
+Each row of your array will be transformed to varaible, that you can access directly in your view.
+*/
 function view($view_name, $formatedData = array()){
 
 	//add datas to view
