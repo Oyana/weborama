@@ -2,7 +2,7 @@
 /**
  * Model
  *
- * @package 7agagner
+ * @package Weborama
  * @subpackage models
  */
 
