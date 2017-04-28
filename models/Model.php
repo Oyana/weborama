@@ -155,7 +155,7 @@ class Model
 	 * @param array
 	 * @return boolean
 	*/
-	public function getLastInsertId()
+	public function lastInsertId()
 	{
 		if ( !empty($this->lastInsertId) )
 		{
@@ -172,7 +172,7 @@ class Model
 	 * @param array
 	 * @return boolean
 	*/
-	public function getLastQuery()
+	public function lastQuery()
 	{
 		if ( !empty($this->lastQuery) )
 		{
@@ -189,7 +189,7 @@ class Model
 	 * @param string
 	 * @return Object
 	*/
-	public function setOrderBy($orderBy)
+	public function orderBy($orderBy)
 	{
 		$this->orderBy = $orderBy;
 		return $this;
@@ -203,7 +203,7 @@ class Model
 	 * @param string
 	 * @return Object
 	*/
-	public function setSelect($select)
+	public function select($select)
 	{
 		$this->select = $select;
 		return $this;
