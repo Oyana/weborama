@@ -1,10 +1,40 @@
 <?php
-include('config.php');
+function exceptionErrorHandler( $errno, $errstr, $errfile, $errline )
+{
+	throw new ErrorException( $errstr, $errno, 0, $errfile, $errline );
+}
+set_error_handler("exceptionErrorHandler");
 
-session_name(APP_NAME);
-session_start();
+try
+{
+	include('config.php');
+}
+catch ( ErrorException $ex )
+{
+	echo "Unable to load weborama configuration file. <br />";
+	echo "Please check <a href='https://github.com/Oyana/weborama/wiki/Installation'> weborama installation wiki</a>. <br />";
+}
 
-require_once('routes.php');
+try
+{
+	session_name(APP_NAME);
+	session_start();
+}
+catch ( ErrorException $ex )
+{
+	echo "Unable to start session. <br />";
+	echo "Please check your php configuration.";
+}
+
+try
+{
+	require_once('routes.php');
+}
+catch ( ErrorException $ex )
+{
+	echo "Unable to load weborama routes file. <br />";
+	echo "Please check <a href='https://github.com/Oyana/weborama/wiki/Routing'> weborama routes wiki</a>. <br />";
+}
 
 /*
 |-------------------------------------------------------
