@@ -16,7 +16,7 @@ class AdminController extends Controller
 		if(!isset($_SESSION['user'])){
 			return redirect('auth/login');
 		}else {
-			return view('admin/home');
+			return $this->view('admin/home');
 		}
 	}
 }

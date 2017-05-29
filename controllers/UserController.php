@@ -13,7 +13,7 @@ class UserController extends Controller
 	}
 
 	public function login(){
-		return view('auth/login');
+		return $this->view('auth/login');
 	}
 
 	public function postLogin(){
@@ -33,7 +33,7 @@ class UserController extends Controller
 	}
 
 	public function register(){
-		return view('auth/register');
+		return $this->view('auth/register');
 	}
 
 	public function postRegister(){
