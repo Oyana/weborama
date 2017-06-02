@@ -8,10 +8,11 @@
 
 class Controller
 {
-    private $msgSuccess = [];
-    private $msgInfo = [];
-    private $msgWarning = [];
-    private $msgError = [];
+    protected $msgSuccess = array();
+    protected $msgInfo = array();
+    protected $msgWarning = array();
+    protected $msgError = array();
+    protected $datas = array();
 
     public function __construct(){
         //Set Flash Session
@@ -72,5 +73,35 @@ class Controller
         }else {
             return $this->msgError;
         }
+    }
+
+    /*
+    Fill the controllerDatas.
+    It's forwarded by default to the view.
+    You can pass an array for variable_name => value pairing or just ('foo',$bar)
+    */
+    public function assign(){
+        if(func_num_args() != 1){
+            $this->datas[func_get_arg(0)] = func_get_arg(1);
+        }
+        else{
+            if(!is_array(func_get_arg(0))){
+                throw new Exception("You passed 1 argument to the assign() function, it should be an array", 1);
+                return false;
+            }
+            $this->datas = $this->datas + func_get_arg(0);  
+        }
+        return $this->datas;
+    }
+
+    /* 
+    Forward the $this->datas array to the view function
+    */
+    public function view($view_name, $formatedData = null){
+        if(!isset($formatedData)){
+            $formatedData = array();
+        }
+        $formatedData = $formatedData + $this->datas;
+        return view($view_name, $formatedData);
     }
 }
