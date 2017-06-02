@@ -75,38 +75,33 @@ class Controller
         }
     }
 
-    public function assign($datas = null){
-        if(!is_array($datas)){
-            $datas = compact($datas);
+    /*
+    Fill the controllerDatas.
+    It's forwarded by default to the view.
+    You can pass an array for variable_name => value pairing or just ('foo',$bar)
+    */
+    public function assign(){
+        if(func_num_args() != 1){
+            $this->datas[func_get_arg(0)] = func_get_arg(1);
         }
-        $this->datas = $datas;
+        else{
+            if(!is_array(func_get_arg(0))){
+                throw new Exception("You passed 1 argument to the assign() function, it should be an array", 1);
+                return false;
+            }
+            $this->datas = $this->datas + func_get_arg(0);  
+        }
         return $this->datas;
     }
 
     /* 
-    Include the wanted view, that's located inside the `/views` directory.
-    You can pass some datas to it.
-    Each row of your array will be transformed to varaible, that you can access directly in your view.
-    By default, it use the $this->datas variable
+    Forward the $this->datas array to the view function
     */
-    function view($view_name, $formatedData = null){
-
+    public function view($view_name, $formatedData = null){
         if(!isset($formatedData)){
-            $formatedData = $this->datas;
+            $formatedData = array();
         }
-
-        //add datas to view
-        foreach($formatedData as $key => $data){
-            //boom variable variable, that's how !
-            ${$key} = $data;
-        }
-
-        if(file_exists(ROOT_PATH . '/views/' . $view_name . '.php')){
-            include(ROOT_PATH . '/views/' . $view_name . '.php');
-        }else {
-            debug('No view found at ' . ROOT_PATH . '/views/' . $view_name . '.php' );
-            return false;
-        }
-
+        $formatedData = $formatedData + $this->datas;
+        return view($view_name, $formatedData);
     }
 }
