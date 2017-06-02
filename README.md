@@ -8,6 +8,6 @@ Weborama is scaled for little project, who don't need an ORM, a template engine 
 
 It can be used 'as is' with very few depedencies. All you need is `PHP > 5.3`
 
-You can (but may not) use `Gulp` and `Elixir` vie `NPM` to compile your CSS and JS files.
+Watch the [documentation here](https://github.com/Oyana/weborama/wiki), and feel free to participate ! :heart:
 
 ---
