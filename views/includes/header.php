@@ -10,4 +10,4 @@
 	<body>
 		<div class="container">
 		<?php
-		view('errors/messages');
+        view('errors/messages');

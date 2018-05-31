@@ -8,14 +8,15 @@
 
 class User extends Model
 {
-	protected $table = 'users';
+    protected $table = 'users';
 
-	protected $rows = [
-					'pseudo' => "string",
-					'email' => "email",
-					'password' => "string",
-				   ];
-	public function __construct(){
-		parent::__construct($this->table);
-	}
+    protected $rows = [
+                    'pseudo' => "string",
+                    'email' => "email",
+                    'password' => "string",
+                   ];
+    public function __construct()
+    {
+        parent::__construct($this->table);
+    }
 }

@@ -13,12 +13,12 @@
 
 $routes = [
 
-	//auth routes
-	"/auth/login"=>"UserController@login",
-	"/auth/register"=>"UserController@register",
-	"/auth/logout"=>"UserController@logout",
-	"/auth/account"=>"UserController@account",
+    //auth routes
+    "/auth/login"=>"UserController@login",
+    "/auth/register"=>"UserController@register",
+    "/auth/logout"=>"UserController@logout",
+    "/auth/account"=>"UserController@account",
 
-	//basic pages routes
-	"/"=>"PageController@home",
+    //basic pages routes
+    "/"=>"PageController@home",
 ];
