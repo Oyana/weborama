@@ -15,19 +15,19 @@ switch (DEBUG_LVL) {
     case 0:
         error_reporting(0);
         ini_set('display_errors', false);
-    break;
+        break;
     case 1:
         error_reporting(E_ALL);
         ini_set('display_errors', true);
-    break;
+        break;
     case 2:
         error_reporting(E_ALL);
         ini_set('display_errors', true);
-    break;
+        break;
     default:
         error_reporting(E_ALL);
         ini_set('display_errors', true);
-    break;
+        break;
 }
 
 //Display in a tree all argument you pass to it. You can pass as many argument as you want.
