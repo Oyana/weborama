@@ -45,8 +45,13 @@ define('APP_NAME', 'Weborama');
 define('SITE_URL', 'localhost/weborama');
 define('ROOT_PATH', dirname(__FILE__));
 
+/*- choose if you application should try
+    by all mean to find a matching route to your request
+    before throwing an error page -*/
+define('ROUTING_FALLBACK', true);
+
 /*- choose beetween 3 debug lvl (0=none, 1=error viewing, 2=dev information) -*/
-define('DEBUG_LVL', '2');
+define('DEBUG_LVL', 2);
 
 /*- Localization of the website, according to the iso639-2 codes ( http://www.loc.gov/standards/iso639-2/php/code_list.php ) and formated like <lang>_<territory> -*/
 define('LANG', 'fr_FR');
