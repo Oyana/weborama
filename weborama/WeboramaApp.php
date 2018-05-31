@@ -1,6 +1,6 @@
 <?php
 
-namespace Weborama
+namespace Weborama;
 
 class WeboramaApp
 {
