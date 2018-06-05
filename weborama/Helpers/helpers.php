@@ -18,6 +18,12 @@ function routeUrl($routename)
     return SITE_URL . '/' . $routename;
 }
 
+//include a view file
+function view($path)
+{
+    include(ROOT_PATH . '/views/' . $path . '.php');
+}
+
 //Redirect you to the wanted route. You can pass some datas that you want to keep with you.
 function redirect($routename, $savedDatas = array())
 {
@@ -27,7 +33,7 @@ function redirect($routename, $savedDatas = array())
     header('location:'.SITE_URL . '/' . $routename);
 }
 
-//return the routeCollection object
+//return the weboramaApp object
 function app()
 {
     return Weborama\WeboramaApp::instance();
@@ -43,10 +49,4 @@ function request()
 function routes()
 {
     return Weborama\Routing\RouteCollection::instance();
-}
-
-//include a view file
-function view($path)
-{
-    include(ROOT_PATH . '/views/' . $path . '.php');
 }

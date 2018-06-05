@@ -17,8 +17,6 @@ $autoloader->addNamespace('Weborama', ROOT_PATH . '/weborama/');
 //get the main application instance
 $weborama = Weborama\WeboramaApp::instance();
 
-$userController = new App\Controllers\UserController;
-
 // Ask the framework to run itself up
 // This will dispatch the request,
 // call the right route and

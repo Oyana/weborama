@@ -34,16 +34,17 @@ class RouteCollection
         }
         $this->checkMethodAvailability($methods);
         $this->routes[] = new Route($url, $pattern, $methods);
+        return $this;
     }
 
     public function get($url, $pattern)
     {
-        $this->add($url, $pattern, ['GET']);
+        return $this->add($url, $pattern, ['GET']);
     }
 
     public function post($url, $pattern)
     {
-        $this->add($url, $pattern, ['POST']);
+        return $this->add($url, $pattern, ['POST']);
     }
 
     private function checkMethodAvailability($methods)
