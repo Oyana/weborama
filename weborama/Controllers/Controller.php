@@ -1,10 +1,6 @@
 <?php
-/**
- * Controller
- *
- * @package 7agagner
- * @subpackage controllers
- */
+
+namespace Weborama\Controllers;
 
 class Controller
 {

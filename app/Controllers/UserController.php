@@ -1,4 +1,9 @@
 <?php
+
+namespace App\Controllers;
+
+use Weborama\Controllers\Controller as Controller;
+
 /**
  * UserController
  *
