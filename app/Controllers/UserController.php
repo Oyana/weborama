@@ -4,13 +4,6 @@ namespace App\Controllers;
 
 use Weborama\Controllers\Controller as Controller;
 
-/**
- * UserController
- *
- * @package 7agagner
- * @subpackage controllers
- */
-
 class UserController extends Controller
 {
     public function __construct()

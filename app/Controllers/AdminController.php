@@ -1,10 +1,8 @@
 <?php
-/**
- * AdminController
- *
- * @package 7agagner
- * @subpackage controllers
- */
+
+namespace App\Controllers;
+
+use Weborama\Controllers\Controller as Controller;
 
 class AdminController extends Controller
 {
@@ -18,7 +16,7 @@ class AdminController extends Controller
         if (!isset($_SESSION['user'])) {
             return redirect('auth/login');
         } else {
-            return $this->view('admin/home');
+            $this->view('admin/home');
         }
     }
 }

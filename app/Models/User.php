@@ -1,10 +1,8 @@
 <?php
-/**
- * User
- *
- * @package Weborama
- * @subpackage models
- */
+
+namespace App\Model
+
+use Weborama\Models\Model;
 
 class User extends Model
 {
