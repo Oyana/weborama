@@ -42,7 +42,8 @@ class Router
     //run the current route
     public function run()
     {
-        $this->currentRoute->treatPattern();
+        $result = $this->currentRoute->treatPattern();
+        return $result;
     }
 
     private function protocolPrefix() : string

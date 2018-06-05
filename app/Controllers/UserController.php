@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function login()
     {
-        return $this->view('auth/login');
+        $this->view('auth/login');
     }
 
     public function postLogin()

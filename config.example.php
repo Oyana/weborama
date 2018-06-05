@@ -62,8 +62,9 @@ define('MAINTENANCE', '0');
 |
 */
 
-define('CONTROLLERS_PATH', 'App\Controllers\\');
-define('MODELS_PATH', 'App\Models\\');
+define('CONTROLLERS_NAMESPACE', 'App\Controllers\\');
+define('MODELS_NAMESPACE', 'App\Models\\');
+define('VIEWS_PATH', 'app/views/');
 
 /*- Localization of the website, according to the iso639-2 codes
 ( http://www.loc.gov/standards/iso639-2/php/code_list.php )

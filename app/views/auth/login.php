@@ -2,7 +2,6 @@
 view('includes/header');
 ?>
 
-<div class="container">
 	<div class="row">
 		<div class="col-sm-6 col-md-4 col-md-offset-4">
 			<h1 class="text-center login-title">Sign in to continue</h1>
@@ -20,10 +19,9 @@ view('includes/header');
 					 </label>
 				</form>
 			</div>
-			<a href="<?php echo route('auth/register') ?>" class="text-center new-account">Create an account </a>
+			<a href="/auth/register" class="text-center new-account">Create an account </a>
 		</div>
 	</div>
-</div>
 
 <?php
 view('includes/footer');
