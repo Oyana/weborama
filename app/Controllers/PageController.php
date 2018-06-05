@@ -1,10 +1,8 @@
 <?php
-/**
- * PageController
- *
- * @package 7agagner
- * @subpackage controllers
- */
+
+namespace App\Controllers;
+
+use Weborama\Controllers\Controller as Controller;
 
 class PageController extends Controller
 {
@@ -15,6 +13,6 @@ class PageController extends Controller
 
     public function home()
     {
-        return $this->view('home');
+        $this->view('home');
     }
 }
