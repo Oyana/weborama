@@ -13,7 +13,7 @@ function stored($url)
 }
 
 //Return the URL corresponding to your $routename
-function route($routename)
+function routeUrl($routename)
 {
     return SITE_URL . '/' . $routename;
 }
@@ -25,4 +25,28 @@ function redirect($routename, $savedDatas = array())
         $_SESSION['redirect'] = $savedDatas;
     }
     header('location:'.SITE_URL . '/' . $routename);
+}
+
+//return the routeCollection object
+function app()
+{
+    return Weborama\WeboramaApp::instance();
+}
+
+//return the request object
+function request()
+{
+    return Weborama\Request\Request::instance();
+}
+
+//return the routeCollection object
+function routes()
+{
+    return Weborama\Routing\RouteCollection::instance();
+}
+
+//include a view file
+function view($path)
+{
+    include(ROOT_PATH . '/views/' . $path . '.php');
 }
