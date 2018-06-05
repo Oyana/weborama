@@ -4,26 +4,10 @@ namespace Weborama;
 
 use Weborama\Routing\Router;
 use Weborama\Display\Displayer;
+use Weborama\Helpers\Objects\Singletons;
 
-final class WeboramaApp
+final class WeboramaApp extends Singletons
 {
-    private function __construct()
-    {
-    }
-
-    /**
-     *Get an instance of the singleton
-     *@return self
-     */
-    public static function instance()
-    {
-        static $inst = null;
-        if ($inst === null) {
-            $inst = new self();
-        }
-        return $inst;
-    }
-
     //run the app
     public function run()
     {

@@ -3,29 +3,13 @@
 namespace Weborama\Routing;
 
 use Weborama\Routing\Route;
+use Weborama\Helpers\Objects\Singletons;
 
-class RouteCollection
+class RouteCollection extends Singletons
 {
     public static $available_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     public $routes = [];
-
-    private function __construct()
-    {
-    }
-
-    /**
-     *Get an instance of the singleton
-     *@return self
-     */
-    public static function instance()
-    {
-        static $inst = null;
-        if ($inst === null) {
-            $inst = new self();
-        }
-        return $inst;
-    }
 
     public function add($url, $pattern, array $methods = [])
     {

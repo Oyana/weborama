@@ -12,9 +12,9 @@
 */
 
 routes()->add('/auth/login', 'UserController@login')
-        ->get('/auth/register', 'UserController@login')
-        ->get('/auth/logout', 'UserController@login')
-        ->get('/auth/account', 'UserController@login')
+        ->get('/auth/register', 'UserController@register')
+        ->get('/auth/logout', 'UserController@logout')
+        ->get('/auth/account', 'UserController@account')
         ->get('/', 'PageController@home')
         ->get('/test', function () {
             echo 'hello';
