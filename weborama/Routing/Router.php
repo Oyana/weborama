@@ -2,7 +2,7 @@
 
 namespace Weborama\Routing;
 
-use Route;
+use Weborama\Routing\Route;
 
 /*
 |-------------------------------------------------------
@@ -46,7 +46,7 @@ class Router
         return $result;
     }
 
-    private function protocolPrefix() : string
+    private function protocolPrefix()
     {
         if (isset($_SERVER['HTTPS'])) {
             return 'https://';

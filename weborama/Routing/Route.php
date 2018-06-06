@@ -31,7 +31,7 @@ class Route
 
     private function executePatternClosure()
     {
-        return ($this->pattern)();
+        return $this->pattern();
     }
 
     private function executePatternController($parsedPattern)
