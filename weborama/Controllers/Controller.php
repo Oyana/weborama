@@ -3,15 +3,10 @@
 namespace Weborama\Controllers;
 
 use Weborama\Display\Displayer;
-use Weborama\Notification\Notifier;
+use Weborama\Messages\Messager;
 
 class Controller
 {
-
-    public function __construct()
-    {
-    }
-
     //add the view to the displayer
     public function view($path, $datas = [])
     {
@@ -22,5 +17,10 @@ class Controller
     public function notify($type, $message)
     {
         Displayer::view($path, $datas);
+    }
+
+    public function message($type, $data)
+    {
+        Messager::add($type, $data);
     }
 }

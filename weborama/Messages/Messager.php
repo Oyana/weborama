@@ -1,35 +1,40 @@
 <?php
 
-namespace Weborama\Message;
+namespace Weborama\Messages;
 
 class Messager
 {
-    public static $notifications = [];
+    public static $messages = [];
 
-    public static function viewJson($data)
+    public static function add($type, $datas)
     {
-        if (is_array($data)) {
-            $data = json_encode($data);
-        }
-        self::view(null, $data);
+        self::$messages[] = new Message($type, $datas);
     }
 
-    public static function endResultView($data)
+    public static function render($type = null)
     {
-        if (count(self::$views) === 0 && null !== $data) {
-            self::viewJson($data);
+        $datas = [];
+        $messages = self::getMessagesByType($type);
+        foreach ($messages as $message) {
+            $datas[] = $message->data;
         }
+
+        return $datas;
     }
 
-    public static function view($path, $datas)
+    private static function getMessagesByType($type = null)
     {
-        self::$views[] = new View($path, $datas);
-    }
-
-    public static function render()
-    {
-        foreach (self::$views as $view) {
-            $view->render();
+        if ($type == null) {
+            return self::$messages;
         }
+
+        $messages = [];
+        foreach (self::$messages as $message) {
+            if ($message->type == $type) {
+                $messages[] = $message;
+            }
+        }
+
+        return $messages;
     }
 }

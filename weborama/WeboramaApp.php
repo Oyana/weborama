@@ -4,6 +4,7 @@ namespace Weborama;
 
 use Weborama\Routing\Router;
 use Weborama\Display\Displayer;
+use Weborama\Messages\Messager;
 use Weborama\Helpers\Objects\Singletons;
 
 final class WeboramaApp extends Singletons
@@ -30,5 +31,10 @@ final class WeboramaApp extends Singletons
     public static function loadRoutes()
     {
         require(ROOT_PATH . '/routes.php');
+    }
+
+    public function messages($type)
+    {
+        return Messager::render($type);
     }
 }
