@@ -1,6 +1,6 @@
 <?php
 
-namespace Weborama\Models
+namespace Weborama\Models;
 
 class Model
 {

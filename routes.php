@@ -11,11 +11,12 @@
 |
 */
 
-routes()->add('/auth/login', 'UserController@login')
-        ->get('/auth/register', 'UserController@register')
-        ->get('/auth/logout', 'UserController@logout')
-        ->get('/auth/account', 'UserController@account')
-        ->get('/', 'PageController@home')
-        ->get('/test', function () {
-            echo 'hello';
+routes()->get('/auth/login', 'AuthController@loginPage')
+        ->post('/auth/login', 'AuthController@login')
+        ->get('/auth/register', 'AuthController@registerPage')
+        ->post('/auth/register', 'AuthController@register')
+        ->post('/auth/logout', 'AuthController@logout')
+        ->get('/profile', 'UserController@profile')
+        ->get('/', function () {
+            view('home');
         });

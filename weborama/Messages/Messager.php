@@ -1,10 +1,10 @@
 <?php
 
-namespace Weborama\Display;
+namespace Weborama\Message;
 
-class Displayer
+class Messager
 {
-    public static $views = [];
+    public static $notifications = [];
 
     public static function viewJson($data)
     {

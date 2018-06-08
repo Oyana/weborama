@@ -28,7 +28,7 @@ class Router
                 function () {
                     view('errors/404');
                 },
-                [request()->httpMethod()]
+                [request()->httpMethod]
             );
         }
     }
@@ -36,7 +36,7 @@ class Router
     // Get route name by truncating current request with SITE_URL
     public function currentRouteName()
     {
-        return str_replace(SITE_URL, '', $this->protocolPrefix() . $_SERVER["HTTP_HOST"] . strtok($_SERVER["REQUEST_URI"], '?'));
+        return explode('?', $_SERVER["REQUEST_URI"])[0];
     }
 
     //run the current route
@@ -66,6 +66,6 @@ class Router
 
     private function verifyHttpMethod($route)
     {
-        return in_array(request()->httpMethod(), $route->methods);
+        return in_array(request()->httpMethod, $route->methods);
     }
 }

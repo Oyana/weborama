@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use Weborama\Controllers\Controller as Controller;
+use Weborama\Controllers\Controller;
 
 class PageController extends Controller
 {

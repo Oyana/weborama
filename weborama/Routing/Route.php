@@ -31,13 +31,28 @@ class Route
 
     private function executePatternClosure()
     {
-        return $this->pattern();
+        $closure = $this->pattern;
+        return $closure();
     }
 
     private function executePatternController($parsedPattern)
     {
         $controllerName = CONTROLLERS_NAMESPACE . $parsedPattern[0];
         $controller = (new $controllerName);
-        return $controller->{$parsedPattern[1]}();
+        return $controller->{$parsedPattern[1]}(...$this->parametersValues($controller, $parsedPattern[1]));
+    }
+
+    private function parametersValues($class, $method)
+    {
+        $values = [];
+        foreach ($this->reflectMethodParameters($class, $method) as $parameter) {
+            $values[] = request()->data($parameter->name);
+        }
+        return $values;
+    }
+
+    private function reflectMethodParameters($class, $method)
+    {
+        return (new \ReflectionMethod($class, $method))->getParameters();
     }
 }
