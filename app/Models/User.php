@@ -13,8 +13,4 @@ class User extends Model
                     'email' => "email",
                     'password' => "string",
                    ];
-    public function __construct()
-    {
-        parent::__construct($this->table);
-    }
 }

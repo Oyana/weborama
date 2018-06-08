@@ -6,9 +6,7 @@ use Weborama\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function account(User $user)
+    public function account($user)
     {
-        var_dump($user);
-        die;
     }
 }
