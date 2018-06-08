@@ -16,7 +16,7 @@ routes()->get('/auth/login', 'AuthController@loginPage')
         ->get('/auth/register', 'AuthController@registerPage')
         ->post('/auth/register', 'AuthController@register')
         ->post('/auth/logout', 'AuthController@logout')
-        ->get('/profile', 'UserController@profile')
+        ->get('/{user}/profile', 'UserController@profile')
         ->get('/', function () {
             view('home');
         });

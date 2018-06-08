@@ -56,16 +56,6 @@ class Router
 
     private function currentRoute()
     {
-        $routes = array_filter(routes()->routes, function ($route) {
-            return ($route->url == $this->currentRouteName() && $this->verifyHttpMethod($route));
-        });
-
-        //return only the first matching route
-        return reset($routes);
-    }
-
-    private function verifyHttpMethod($route)
-    {
-        return in_array(request()->httpMethod, $route->methods);
+        return (new RouteParser)->getCurrentRoute($this->currentRouteName());
     }
 }

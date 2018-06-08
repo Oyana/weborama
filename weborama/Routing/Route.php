@@ -17,6 +17,8 @@ class Route
 
     public function treatPattern()
     {
+        var_dump($this->pattern);
+        die;
         //directly execute any closure
         if (is_object($this->pattern) && ($this->pattern instanceof \Closure)) {
             return $this->executePatternClosure();
