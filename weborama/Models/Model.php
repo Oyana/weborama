@@ -2,237 +2,29 @@
 
 namespace Weborama\Models;
 
+use Weborama\Database\ORM;
+
 class Model
 {
-    protected $db;
-    protected $pdo;
-    protected $rows;
+    protected $connection;
+    protected $orm;
     protected $table;
-    protected $lastQuery;
-    protected $lastInsertId;
-    protected $orderBy;
-    protected $select = '*';
+    protected $data;
+    protected $primaryKey = 'id';
 
     /**
      * __construct Model
      * @author Golga
      * @since 0.2
-     * @param   object      $db
      */
-    public function __construct()
+    public function __construct($id = null)
     {
-        //set database value (use constant or forced value in the model)
-        if (!isset($this->db['type'])) {
-            $this->db['type'] = DB_TYPE;
-        }
-        if (!isset($this->db['host'])) {
-            $this->db['host'] = DB_HOST;
-        }
-        if (!isset($this->db['name'])) {
-            $this->db['name'] = DB_NAME;
-        }
-        if (!isset($this->db['user'])) {
-            $this->db['user'] = DB_USER;
-        }
-        if (!isset($this->db['pass'])) {
-            $this->db['pass'] = DB_PASS;
-        }
-        if (!isset($this->db['prefix'])) {
-            $this->db['prefix'] = DB_PREFIX;
-        }
-        try { // PDO Connection
-            $dsn = "" . $this->db['type']. ':host=' . $this->db['host']. ';dbname=' . $this->db['name']. "";
-            $pdo = new \PDO($dsn, $this->db['user'], $this->db['pass']);
-            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $pdo->exec("set names utf8");
-        } catch (PDOException $e) {
-            if (DEBUG_LVL > 0) {
-                echo '<pre>';
-                echo $e->getMessage();
-                echo '</pre>';
-                die();
-            }
+        $this->orm = new ORM($this->table, $this->primaryKey);
+
+        if (isset($id)) {
+            return $this->orm->getById($id);
         }
 
-        $this->pdo = $pdo;
-        return true;
-    }
-
-    /**
-     * __destruct
-     *
-     * @author Golga
-     * @since 0.2
-     * @param none
-     * @return boolean
-    */
-    public function __destruct()
-    {
-        unset($this->pdo);
-        return true;
-    }
-
-    /**
-     * addByArray
-     *
-     * @author Golga
-     * @since 0.2
-     * @param array
-     * @return boolean
-    */
-    public function addByArray($array)
-    {
-        $query = "INSERT INTO " . $this->db['prefix'] . $this->table . " ";
-        $format = "(";
-        $value = "VALUES (";
-        foreach ($array as $k => $v) {
-            $format .= "`" . $k . "`, ";
-            $value .= $this->pdo->quote($v) . ", ";
-        }
-        $query .= rtrim($format, ", ") . ") ". rtrim($value, ", ") . ");";
-        $this->pdo->exec($query);
-        $this->lastQuery = $query;
-
-        $this->lastInsertId = $this->pdo->lastInsertId();
-        return true;
-    }
-
-    /**
-     * updateByArray
-     *
-     * @author Golga
-     * @since 0.2
-     * @param integer       $id
-     * @param array     $array
-     * @return boolean
-    */
-    public function updateByArray($id, $array)
-    {
-        $query = "UPDATE " . $this->db['prefix'] . $this->table . " SET ";
-        $format = '';
-        foreach ($array as $k => $v) {
-            $format .= "`" . $k . "` = " . $this->pdo->quote($v) . ", ";
-        }
-        $query .= rtrim($format, ", ") . " WHERE id = " . $id;
-        $this->pdo->exec($query);
-        $this->lastQuery = $query;
-        return true;
-    }
-
-    /**
-     * delete
-     *
-     * @author Jiedara
-     * @since 0.3
-     * @param integer $id
-     * @return boolean
-    */
-    public function delete($id)
-    {
-        $query = "DELETE FROM " . $this->db['prefix'] . $this->table . " WHERE id = " . $id;
-        $this->pdo->exec($query);
-        $this->lastQuery = $query;
-        return true;
-    }
-
-
-    /**
-     * getLastInsertId
-     *
-     * @author Golga
-     * @since 0.2
-     * @param array
-     * @return boolean
-    */
-    public function lastInsertId()
-    {
-        if (!empty($this->lastInsertId)) {
-            return $this->lastInsertId;
-        }
-        return $this->pdo->lastInsertId();
-    }
-
-    /**
-     * getLastInsertQuery
-     *
-     * @author Golga
-     * @since 0.2
-     * @param array
-     * @return boolean
-    */
-    public function lastQuery()
-    {
-        if (!empty($this->lastQuery)) {
-            return $this->lastQuery;
-        }
-        return $this->pdo->debugDumpParams();
-    }
-
-    /**
-     * setOrderBy
-     *
-     * @author Jiedara
-     * @since 0.3
-     * @param string
-     * @return Object
-    */
-    public function orderBy($orderBy)
-    {
-        $this->orderBy = $orderBy;
-        return $this;
-    }
-
-    /**
-     * setSelect
-     *
-     * @author Jiedara
-     * @since 0.3
-     * @param string
-     * @return Object
-    */
-    public function select($select)
-    {
-        $this->select = $select;
-        return $this;
-    }
-
-    public function getAll()
-    {
-        if (isset($this->orderBy)) {
-            $statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . " ORDER BY ". $this->orderBy .";");
-        } else {
-            $statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . ";");
-        }
-        $statement->execute();
-        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
-    }
-
-    public function getById($id)
-    {
-        $statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . "  WHERE `" . $this->id_key . "` = " . $id . ";");
-        $statement->execute();
-        $data = $statement->fetch(PDO::FETCH_ASSOC);
-        return $data;
-    }
-
-    public function getByWhere($where = false)
-    {
-        if (!$where) {
-            return $this->getAll();
-        } elseif (!is_array($where)) {
-            $whereData = $where . ";";
-        } else {
-            $whereData = " 1";
-            foreach ($where as $key => $value) {
-                $whereData = $whereData . " AND " . $key . " = '" . $value . "'";
-            }
-            $whereData = $whereData . " ; ";
-        }
-        $statement = $this->pdo->prepare("SELECT ". $this->select ." FROM " . $this->db['prefix'] . $this->table . "  WHERE " . $whereData);
-        $statement->execute();
-        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
     }
 
     public function slugify($string)
