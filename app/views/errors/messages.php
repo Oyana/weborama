@@ -1,30 +1,37 @@
 <?php
 
-
 //Error Messages
-echo '<div class="alert alert-danger"><ul>';
-foreach (app()->messages('error') as $error) {
-    echo '<li>'. $error .'</li>';
+if (count(app()->messages('error'))) {
+    echo '<div class="alert alert-danger"><ul>';
+    foreach (app()->messages('error') as $error) {
+        echo '<li>'. $error .'</li>';
+    }
+    echo '</ul></div>';
 }
-echo '</ul></div>';
 
 //Warning Messages
-echo '<div class="alert alert-info"><ul>';
-foreach (app()->messages('info') as $warning) {
-    echo '<li>'. $warning .'</li>';
+if (count(app()->messages('warning'))) {
+    echo '<div class="alert alert-warning"><ul>';
+    foreach (app()->messages('warning') as $warning) {
+        echo '<li>'. $warning .'</li>';
+    }
+    echo '</ul></div>';
 }
-echo '</ul></div>';
 
 //Info Messages
-echo '<div class="alert alert-warning"><ul>';
-foreach (app()->messages('warning') as $info) {
-    echo '<li>'. $info .'</li>';
+if (count(app()->messages('info'))) {
+    echo '<div class="alert alert-info"><ul>';
+    foreach (app()->messages('info') as $info) {
+        echo '<li>'. $info .'</li>';
+    }
+    echo '</ul></div>';
 }
-echo '</ul></div>';
 
 //Success Messages
-echo '<div class="alert alert-success"><ul>';
-foreach (app()->messages('success') as $success) {
-    echo '<li>'. $success .'</li>';
+if (count(app()->messages('success'))) {
+    echo '<div class="alert alert-success"><ul>';
+    foreach (app()->messages('success') as $success) {
+        echo '<li>'. $success .'</li>';
+    }
+    echo '</ul></div>';
 }
-echo '</ul></div>';
