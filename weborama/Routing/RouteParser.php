@@ -30,11 +30,17 @@ class RouteParser
     {
         $requestParts = explode('/', $requestUrl);
         $routeParts = explode('/', $routeUrl);
+
+        if (count($requestParts) !== count($routeParts)) {
+            return false;
+        }
+
         foreach ($routeParts as $i => $routePart) {
             if ($requestParts[$i] !== $routePart && !$this->isParsable($routePart)) {
                 return false;
             }
         }
+
         return true;
     }
 
