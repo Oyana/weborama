@@ -7,7 +7,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function account(User $user)
+    public function profile(User $user)
     {
         var_dump($user);
         die;

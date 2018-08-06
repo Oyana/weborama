@@ -7,12 +7,20 @@ class Route
     public $url;
     public $pattern;
     public $methods;
+    public $fillableParameters = [];
+    public $filledParameters = [];
 
     public function __construct($url, $pattern, $methods)
     {
         $this->url = $url;
         $this->pattern = $pattern;
         $this->methods = $methods;
+
+        foreach (explode('/', $url) as $urlPartIndex => $urlPart) {
+            if (!empty($urlPart) && $urlPart[0] == '{' && $urlPart[strlen($urlPart)-1] == '}') {
+                $this->fillableParameters[$urlPartIndex] = $urlPart;
+            }
+        }
     }
 
     public function treatPattern()
@@ -26,6 +34,14 @@ class Route
         $parsedPattern = explode('@', $this->pattern);
         if (count($parsedPattern) == 2) {
             return $this->executePatternController($parsedPattern);
+        }
+    }
+
+    public function matchedWithUrl($currentUrl)
+    {
+        $parsedCurrentUrl = explode('/', $currentUrl);
+        foreach ($this->fillableParameters as $index => $parameter) {
+            $this->filledParameters[] = $parsedCurrentUrl[$index];
         }
     }
 
@@ -45,8 +61,13 @@ class Route
     private function parametersValues($class, $method)
     {
         $values = [];
-        foreach ($this->reflectMethodParameters($class, $method) as $parameter) {
-            $values[] = request()->data($parameter->name);
+        foreach ($this->reflectMethodParameters($class, $method) as $index => $parameter) {
+            if (null !== $parameter->getType()) {
+                $objectTypeHintedName = $parameter->getType()->getName();
+                $values[] = new $objectTypeHintedName($this->filledParameters[$index]);
+            } else {
+                $values[] = $this->filledParameters[$index];
+            }
         }
         return $values;
     }

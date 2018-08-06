@@ -19,7 +19,7 @@ class Model
      * @since 0.2
      * @param   object      $db
      */
-    public function __construct($table)
+    public function __construct()
     {
         //set database value (use constant or forced value in the model)
         if (!isset($this->db['type'])) {
@@ -42,8 +42,8 @@ class Model
         }
         try { // PDO Connection
             $dsn = "" . $this->db['type']. ':host=' . $this->db['host']. ';dbname=' . $this->db['name']. "";
-            $pdo = new PDO($dsn, $this->db['user'], $this->db['pass']);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo = new \PDO($dsn, $this->db['user'], $this->db['pass']);
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $pdo->exec("set names utf8");
         } catch (PDOException $e) {
             if (DEBUG_LVL > 0) {
@@ -55,7 +55,6 @@ class Model
         }
 
         $this->pdo = $pdo;
-        $this->table = $table;
         return true;
     }
 
