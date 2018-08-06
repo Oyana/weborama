@@ -17,7 +17,10 @@ class RouteCollection extends Singletons
             $methods = $this::$available_methods;
         }
         $this->checkMethodAvailability($methods);
-        $this->routes[] = new Route($url, $pattern, $methods);
+        foreach ($methods as $method) {
+            $this->routes[$method][$url] = new Route($url, $pattern, $methods);
+        }
+
         return $this;
     }
 
@@ -29,6 +32,21 @@ class RouteCollection extends Singletons
     public function post($url, $pattern)
     {
         return $this->add($url, $pattern, ['POST']);
+    }
+
+    public function put($url, $pattern)
+    {
+        return $this->add($url, $pattern, ['PUT']);
+    }
+
+    public function patch($url, $pattern)
+    {
+        return $this->add($url, $pattern, ['PATCH']);
+    }
+
+    public function delete($url, $pattern)
+    {
+        return $this->add($url, $pattern, ['DELETE']);
     }
 
     private function checkMethodAvailability($methods)

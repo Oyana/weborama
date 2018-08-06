@@ -9,16 +9,13 @@ class RouteParser
     public function getCurrentRoute($currentRouteName)
     {
         $matchingRoutes = [];
-
-        foreach (routes()->routes as $route) {
-            if ($this->urlParsedMatchRequest($route->url, $currentRouteName)) {
-                if ($route->url == $currentRouteName && $this->verifyHttpMethod($route)) {
-                    $matchingRoutes[] = $route;
-                }
+        $matchedRoute = routes()->routes[request()->httpMethod][$currentRouteName];
+        if ($this->urlParsedMatchRequest($matchedRoute->url, $currentRouteName)) {
+            if ($matchedRoute->url == $currentRouteName && $this->verifyHttpMethod($matchedRoute)) {
+                return $matchedRoute;
             }
         }
-        //return only the first matching route
-        return reset($matchingRoutes);
+        return false;
     }
 
     private function verifyHttpMethod($route)
