@@ -18,6 +18,7 @@ class ORM
     public function __construct($table, $primaryKey = 'id')
     {
         $this->table = $table;
+        $this->primaryKey = $primaryKey;
         $this->connection = (new Connector)->connect();
     }
 
@@ -154,16 +155,14 @@ class ORM
             $statement = $this->connection->pdo->prepare("SELECT ". $this->select ." FROM " . $this->connection->db['prefix'] . $this->table . ";");
         }
         $statement->execute();
-        $this->data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this;
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getById($id)
     {
-        $statement = $this->connection->pdo->prepare("SELECT ". $this->select ." FROM " . $this->connection->db['prefix'] . $this->table . "  WHERE `" . $this->primaryKey . "` = " . $id . ";");
+        $statement = $this->connection->pdo->prepare("SELECT ". $this->select ." FROM " . $this->connection->db['prefix'] . $this->table . "  WHERE `" . $this->primaryKey . "` = '" . $id . "';");
         $statement->execute();
-        $this->data = $statement->fetch(PDO::FETCH_ASSOC);
-        return $this;
+        return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function getByWhere($where = false)
@@ -181,8 +180,7 @@ class ORM
         }
         $statement = $this->connection->pdo->prepare("SELECT ". $this->select ." FROM " . $this->connection->db['prefix'] . $this->table . "  WHERE " . $whereData);
         $statement->execute();
-        $this->data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $this;
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }

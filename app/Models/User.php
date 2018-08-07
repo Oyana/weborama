@@ -8,7 +8,7 @@ class User extends Model
 {
     protected $table = 'users';
 
-    protected $primaryKey = 'pseudo';
+    protected $primaryKey = 'name';
 
     protected $rows = [
                     'pseudo' => "string",

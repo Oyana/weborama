@@ -22,7 +22,7 @@ class Model
         $this->orm = new ORM($this->table, $this->primaryKey);
 
         if (isset($id)) {
-            return $this->orm->getById($id);
+            $this->data = $this->orm->getById($id);
         }
 
     }
