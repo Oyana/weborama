@@ -19,9 +19,14 @@ class Router
 {
     public $currentRoute;
 
+    /**
+     * Fill the currentRoute attribute
+     */
     public function __construct()
     {
         $this->currentRoute = $this->currentRoute();
+
+        //if no route is found, create a 404 route.
         if (null == $this->currentRoute) {
             $this->currentRoute = new Route(
                 $this->currentRouteName(),
@@ -33,19 +38,26 @@ class Router
         }
     }
 
-    // Get route name by truncating current request with SITE_URL
+    /**
+     * Get route name by truncating current request with SITE_URL
+     */
     public function currentRouteName()
     {
         return explode('?', $_SERVER["REQUEST_URI"])[0];
     }
 
-    //run the current route
+    /**
+     * Run the current route
+     */
     public function run()
     {
         $result = $this->currentRoute->treatPattern();
         return $result;
     }
 
+    /**
+     * Return the current used http protocol
+     */
     private function protocolPrefix()
     {
         if (isset($_SERVER['HTTPS'])) {
@@ -54,6 +66,9 @@ class Router
         return 'http://';
     }
 
+    /**
+     * Retrieve the current used route
+     */
     private function currentRoute()
     {
         return (new RouteParser)->getCurrentRoute($this->currentRouteName());

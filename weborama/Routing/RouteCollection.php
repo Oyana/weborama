@@ -11,7 +11,12 @@ class RouteCollection extends Singletons
 
     public $routes = [];
 
-    public function add($url, $pattern, array $methods = [])
+    /**
+     * Instanciate a new route with an URL
+     * an associated pattern (closure or controller method)
+     * and an associated HTTP method (or multiple HTTP methods)
+     */
+    public function add(string $url, string $pattern, array $methods = [])
     {
         if (empty($methods)) {
             $methods = $this::$available_methods;
@@ -24,31 +29,49 @@ class RouteCollection extends Singletons
         return $this;
     }
 
-    public function get($url, $pattern)
+    /**
+     * Create a new route for a GET method 
+     */
+    public function get(string $url, string $pattern)
     {
         return $this->add($url, $pattern, ['GET']);
     }
 
-    public function post($url, $pattern)
+    /**
+     * Create a new route for a POST method 
+     */
+    public function post(string $url, string $pattern)
     {
         return $this->add($url, $pattern, ['POST']);
     }
 
-    public function put($url, $pattern)
+    /**
+     * Create a new route for a PUT method 
+     */
+    public function put(string $url, string $pattern)
     {
         return $this->add($url, $pattern, ['PUT']);
     }
 
-    public function patch($url, $pattern)
+    /**
+     * Create a new route for a PATCH method 
+     */
+    public function patch(string $url, string $pattern)
     {
         return $this->add($url, $pattern, ['PATCH']);
     }
 
-    public function delete($url, $pattern)
+    /**
+     * Create a new route for a DELETE method 
+     */
+    public function delete(string $url, string $pattern)
     {
         return $this->add($url, $pattern, ['DELETE']);
     }
 
+    /**
+     * Check if the called method is allowed
+     */
     private function checkMethodAvailability($methods)
     {
         foreach ($methods as $method) {

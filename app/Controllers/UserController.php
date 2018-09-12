@@ -7,7 +7,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function profile(User $user)
+    public function profile(User $user, $theme = 'default')
     {
         var_dump($user);
         die;

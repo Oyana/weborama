@@ -23,6 +23,9 @@ class Route
         }
     }
 
+    /**
+     * Execute the pattern of the route, either a controller method or a closure
+     */
     public function treatPattern()
     {
         //directly execute any closure
@@ -37,6 +40,28 @@ class Route
         }
     }
 
+    /**
+     * Execute the closure in the route
+     */
+    private function executePatternClosure()
+    {
+        $closure = $this->pattern;
+        return $closure();
+    }
+    /**
+     * Execute the controller method in the route
+     * With the rightfully filled parameters 
+     */
+    private function executePatternController($parsedPattern)
+    {
+        $controllerName = CONTROLLERS_NAMESPACE . $parsedPattern[0];
+        $controller = (new $controllerName);
+        return $controller->{$parsedPattern[1]}(...$this->parametersValues($controller, $parsedPattern[1]));
+    }
+
+    /**
+     * Fill the filledParameters array with the value inside the current URL
+     */
     public function matchedWithUrl($currentUrl)
     {
         $parsedCurrentUrl = explode('/', $currentUrl);
@@ -45,19 +70,10 @@ class Route
         }
     }
 
-    private function executePatternClosure()
-    {
-        $closure = $this->pattern;
-        return $closure();
-    }
-
-    private function executePatternController($parsedPattern)
-    {
-        $controllerName = CONTROLLERS_NAMESPACE . $parsedPattern[0];
-        $controller = (new $controllerName);
-        return $controller->{$parsedPattern[1]}(...$this->parametersValues($controller, $parsedPattern[1]));
-    }
-
+    /**
+     * Create the value array to be pass to the controller method.
+     * Those values will be object instance if the parameter is typehinted.
+     */
     private function parametersValues($class, $method)
     {
         $values = [];
@@ -66,12 +82,17 @@ class Route
                 $objectTypeHintedName = $parameter->getType()->getName();
                 $values[] = new $objectTypeHintedName($this->filledParameters[$index]);
             } else {
-                $values[] = $this->filledParameters[$index];
+                if (isset($this->filledParameters[$index])) {
+                    $values[] = $this->filledParameters[$index];
+                }
             }
         }
         return $values;
     }
 
+    /**
+     * Get the parameters of a method in a class
+     */
     private function reflectMethodParameters($class, $method)
     {
         return (new \ReflectionMethod($class, $method))->getParameters();
