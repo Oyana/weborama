@@ -21,7 +21,7 @@ function routeUrl($routename)
 //include a view file
 function view($path)
 {
-    include(ROOT_PATH . '/' . VIEWS_PATH . $path . '.php');
+    include ROOT_PATH . '/' . VIEWS_PATH . $path . '.php';
 }
 
 //Redirect you to the wanted route. You can pass some datas that you want to keep with you.

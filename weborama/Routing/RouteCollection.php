@@ -16,7 +16,7 @@ class RouteCollection extends Singletons
      * an associated pattern (closure or controller method)
      * and an associated HTTP method (or multiple HTTP methods)
      */
-    public function add(string $url, string $pattern, array $methods = [])
+    public function add(string $url, $pattern, array $methods = [])
     {
         if (empty($methods)) {
             $methods = $this::$available_methods;
@@ -32,7 +32,7 @@ class RouteCollection extends Singletons
     /**
      * Create a new route for a GET method 
      */
-    public function get(string $url, string $pattern)
+    public function get(string $url, $pattern)
     {
         return $this->add($url, $pattern, ['GET']);
     }
@@ -40,7 +40,7 @@ class RouteCollection extends Singletons
     /**
      * Create a new route for a POST method 
      */
-    public function post(string $url, string $pattern)
+    public function post(string $url, $pattern)
     {
         return $this->add($url, $pattern, ['POST']);
     }
@@ -48,7 +48,7 @@ class RouteCollection extends Singletons
     /**
      * Create a new route for a PUT method 
      */
-    public function put(string $url, string $pattern)
+    public function put(string $url, $pattern)
     {
         return $this->add($url, $pattern, ['PUT']);
     }
@@ -56,7 +56,7 @@ class RouteCollection extends Singletons
     /**
      * Create a new route for a PATCH method 
      */
-    public function patch(string $url, string $pattern)
+    public function patch(string $url, $pattern)
     {
         return $this->add($url, $pattern, ['PATCH']);
     }
@@ -64,7 +64,7 @@ class RouteCollection extends Singletons
     /**
      * Create a new route for a DELETE method 
      */
-    public function delete(string $url, string $pattern)
+    public function delete(string $url, $pattern)
     {
         return $this->add($url, $pattern, ['DELETE']);
     }

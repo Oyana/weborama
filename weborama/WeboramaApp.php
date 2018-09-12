@@ -25,12 +25,12 @@ final class WeboramaApp extends Singletons
 
     public static function loadHelpers()
     {
-        require('Helpers/helpers.php');
+        include 'Helpers/helpers.php';
     }
 
     public static function loadRoutes()
     {
-        require(ROOT_PATH . '/routes.php');
+        include ROOT_PATH . '/routes.php';
     }
 
     public function messages($type)

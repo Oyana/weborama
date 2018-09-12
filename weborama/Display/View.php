@@ -27,9 +27,9 @@ class View
         }
 
         if (file_exists(ROOT_PATH . '/' . VIEWS_PATH . $this->path . '.php')) {
-            include(ROOT_PATH . '/' . VIEWS_PATH . $this->path . '.php');
+            include ROOT_PATH . '/' . VIEWS_PATH . $this->path . '.php';
         } else {
-            echo 'No view found at ' . VIEWS_PATH . '/' . $this->path . '.php';
+            echo 'No view found at ' . VIEWS_PATH . $this->path . '.php';
         }
     }
 
