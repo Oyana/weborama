@@ -26,7 +26,7 @@ class Delete extends Common
      * @param Query  $fluent
      * @param string $table
      */
-    public function __construct(Query $fluent, $table) 
+    public function __construct(Database $db, $table) 
     {
         $clauses = array(
             'DELETE FROM' => array($this, 'getClauseDeleteFrom'),
@@ -38,7 +38,7 @@ class Delete extends Common
             'LIMIT'       => null,
         );
 
-        parent::__construct($fluent, $clauses);
+        parent::__construct($db, $clauses);
 
         $this->statements['DELETE FROM'] = $table;
         $this->statements['DELETE']      = $table;

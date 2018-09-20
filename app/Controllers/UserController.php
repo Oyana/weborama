@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = (new User)->all();
         $this->view('users/index', compact('users'));
     }
 
@@ -25,23 +25,25 @@ class UserController extends Controller
     
     public function createUser()
     {
-        $user = User::hydrate(request()->post)->persist();
+        $user = (new User)->hydrate(request()->post)->persist();
         redirect($user->id . '/profile');
     }
     
     public function editForm(User $user)
     {
-        $this->view('users/form', compact('user'));
+        $this->view('users/edit', compact('user'));
     }
     
     public function editUser(User $user)
     {
-
+        $user = $user->hydrate(request()->post)->persist();
+        redirect($user->id . '/profile');
     }
     
     public function delete(User $user)
     {
-
+        $user->delete();
+        redirect('profiles');
     }
     
     

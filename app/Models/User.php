@@ -11,6 +11,7 @@ class User extends Model
     protected $primaryKey = 'id';
 
     protected $rows = [
+                    'id' => "integer",
                     'name' => "string",
                     'email' => "email",
                     'password' => "string",

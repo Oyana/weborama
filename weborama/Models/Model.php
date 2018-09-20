@@ -32,36 +32,32 @@ abstract class Model
         }        
     }
 
-    public static function all()
+    public function all()
     {
-        $caller = get_called_class();
-        $callerClass = new $caller;
         $models = [];
-        foreach ((new Database)->from($callerClass->table)->fetchAll() as $key => $value) {
-            $models[] = new $caller($value[$callerClass->primaryKey], $value);
+        foreach ((new Database)->from($this->table)->fetchAll() as $key => $value) {
+            $models[] = new $this($value[$this->primaryKey], $value);
         }
         return $models;
     }
 
-    public static function hydrate($datas)
+    public function hydrate($datas)
     {
-        $caller = get_called_class();
-        $callerClass = new $caller;
-        foreach (array_keys($callerClass->rows) as $value) {
+        foreach (array_keys($this->rows) as $value) {
             if (isset($datas[$value])) {
-                $callerClass->data[$value] = $datas[$value];
+                $this->data[$value] = $datas[$value];
             }
         }
-        return $callerClass;
+        return $this;
     }
 
     public function persist()
     {
-        if (null !== $this->id) {
+        if (null !== $this->{$this->primaryKey}) {
             $this->update();
         } else {
             $id = $this->insert();
-            $this->id = $id;
+            $this->{$this->primaryKey} = $id;
         }
         return $this;
     }
@@ -73,6 +69,11 @@ abstract class Model
 
     private function update()
     {
-        return $this->db->update($this->table, $this->data, $this->id, $this->primaryKey)->execute();
+        return $this->db->update($this->table, $this->data, $this->{$this->primaryKey}, $this->primaryKey)->execute();
+    }
+
+    public function delete()
+    {
+        return $this->db->delete($this->table, $this->{$this->primaryKey}, $this->primaryKey)->execute();
     }
 }

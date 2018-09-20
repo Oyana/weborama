@@ -60,8 +60,10 @@ class RouteParser
      */
     private function isParsable($string)
     {
-        if ($string[0] == '{' && $string[strlen($string) - 1] == '}') {
-            return true;
+        if (isset($string[0])) {
+            if ($string[0] == '{' && $string[strlen($string) - 1] == '}') {
+                return true;
+            }
         }
         return false;
     }

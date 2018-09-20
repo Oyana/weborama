@@ -3,12 +3,11 @@
 namespace Weborama\Routing;
 
 use Weborama\Routing\Route;
+use Weborama\Request\Request;
 use Weborama\Helpers\Objects\Singletons;
 
 class RouteCollection extends Singletons
 {
-    public static $available_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
-
     public $routes = [];
 
     /**
@@ -19,7 +18,7 @@ class RouteCollection extends Singletons
     public function add(string $url, $pattern, array $methods = [])
     {
         if (empty($methods)) {
-            $methods = $this::$available_methods;
+            $methods = Request::$available_methods;
         }
         $this->checkMethodAvailability($methods);
         foreach ($methods as $method) {
@@ -75,7 +74,7 @@ class RouteCollection extends Singletons
     private function checkMethodAvailability($methods)
     {
         foreach ($methods as $method) {
-            if (!in_array($method, RouteCollection::$available_methods)) {
+            if (!in_array($method, Request::$available_methods)) {
                 throw new \Exception($method . " is not an available HTTP method", 1);
             }
         }

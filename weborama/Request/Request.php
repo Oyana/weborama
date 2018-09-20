@@ -10,11 +10,19 @@ class Request extends Singletons
     public $httpMethod = 'GET';
     public $post = [];
     public $get = [];
+    public static $available_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     protected function __construct()
     {
-        $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         $this->setDatas();
+        $this->httpMethod = $_SERVER['REQUEST_METHOD'];
+        if ($this->httpMethod === 'POST' && !empty($this->post['_method'])) {
+            if (in_array(strtoupper($this->post['_method']), Request::$available_methods)) {
+                $this->httpMethod = strtoupper($this->post['_method']);
+            } else {
+                throw new \Exception("Bad http method supplied : " . $this->post['_method'] . " is not a supported http method", 1);
+            }
+        }
     }
 
     public function data($name)
