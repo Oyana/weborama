@@ -45,6 +45,12 @@ function request()
     return Weborama\Request\Request::instance();
 }
 
+//return the response object
+function response()
+{
+    return Weborama\Request\Response::instance();
+}
+
 //return the routeCollection object
 function routes()
 {

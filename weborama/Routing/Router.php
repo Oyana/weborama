@@ -28,6 +28,7 @@ class Router
 
         //if no route is found, create a 404 route.
         if (null == $this->currentRoute) {
+            response()->status(404);
             $this->currentRoute = new Route(
                 $this->currentRouteName(),
                 function () {
