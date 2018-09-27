@@ -101,21 +101,6 @@ class Database
     }
 
     /**
-     * Create DELETE FROM query
-     *
-     * @param string $table
-     * @param string $primaryKey
-     *
-     * @return Delete
-     */
-    public function deleteFrom($table, $primaryKey = null, $primaryKeyName = 'id') 
-    {
-        $args = func_get_args();
-
-        return call_user_func_array(array($this, 'delete'), $args);
-    }
-
-    /**
      * @return \PDO
      */
     public function getPdo() 

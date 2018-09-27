@@ -39,7 +39,7 @@ class Route
             return $this->executePatternController($parsedPattern);
         }
     }
-
+ 
     /**
      * Execute the closure in the route
      */
@@ -48,6 +48,7 @@ class Route
         $closure = $this->pattern;
         return $closure();
     }
+
     /**
      * Execute the controller method in the route
      * With the rightfully filled parameters 
