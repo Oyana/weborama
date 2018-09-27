@@ -96,9 +96,9 @@ abstract class Model
      */
     public function get($id = null)
     {
-        if (isset($id)) {
+        if (!isset($id)) {
             $id = $this->{$this->primaryKey};
-            if (isset($id)) {
+            if (!isset($id)) {
                 throw new \Exception("No primary key in function parameter or in the model to get() on", 1);
             } 
         }
