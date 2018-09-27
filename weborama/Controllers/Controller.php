@@ -13,6 +13,12 @@ class Controller
         Displayer::view($path, $datas);
     }
 
+    //add a json response to the displayer
+    public function json($datas = [])
+    {
+        Displayer::view(null, $datas);
+    }
+
     //add a notification
     public function notify($type, $message)
     {

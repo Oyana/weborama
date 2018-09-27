@@ -4,7 +4,7 @@ namespace Weborama\Models;
 
 use Weborama\Database\Database;
 
-abstract class Model
+abstract class Model implements \JsonSerializable
 {
     protected $db;
     protected $table;
@@ -17,7 +17,11 @@ abstract class Model
         $this->db = new Database();
 
         if (empty($data) && isset($id)) {
-            $this->data = $this->get($id);
+            if (empty($this->data = $this->get($id))) {
+                response()->status(404);
+                view('errors/404');
+                app()->close();
+            }
         } else {
             $this->data = $data;
         }
@@ -26,7 +30,7 @@ abstract class Model
     public function __get($name)
     {
         if (array_key_exists($name, $this->rows)) {
-            return $this->data[$name];
+            return $this->data[$name] ?? null;
         }        
     }
 
@@ -105,10 +109,20 @@ abstract class Model
 
         $result = $this->db->from($this->table, $id, $this->primaryKey)->fetch();
 
-        if (!$result) {
-            throw new \Exception("Nothing found with the " . $this->primaryKey . " " . $id, 1);
-        }
-        
         return $result;
+    }
+
+    /**
+     * Define the serialization in JSON for the model
+     */
+    public function jsonSerialize() 
+    {
+        $jsonResponse = [];
+
+        foreach ($this->rows as $name => $info) {
+            $jsonResponse[$name] = $this->$name;
+        }
+
+        return $jsonResponse;
     }
 }

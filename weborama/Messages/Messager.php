@@ -6,11 +6,17 @@ class Messager
 {
     public static $messages = [];
 
+    /**
+     * Add a new message
+     */
     public static function add($type, $datas)
     {
         self::$messages[] = new Message($type, $datas);
     }
 
+    /**
+     * Return messages datas by types
+     */
     public static function render($type = null)
     {
         $datas = [];
@@ -22,19 +28,31 @@ class Messager
         return $datas;
     }
 
+    /**
+     * Get messages by their types
+     */
     private static function getMessagesByType($type = null)
     {
         if ($type == null) {
             return self::$messages;
         }
 
-        $messages = [];
-        foreach (self::$messages as $message) {
-            if ($message->type == $type) {
-                $messages[] = $message;
+        return array_filter(
+            self::$messages,
+            function ($message) use ($type) {
+                return $message->type === $type;
             }
-        }
+        );
+    }
 
-        return $messages;
+    /**
+     * Fill the messager with messages in session and empty this session.
+     */
+    public static function loadSessionMessages()
+    {
+        if (isset($_SESSION['messages'])) {
+            self::$messages = $_SESSION['messages'];
+            unset($_SESSION['messages']);
+        }
     }
 }

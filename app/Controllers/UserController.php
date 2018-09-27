@@ -26,6 +26,9 @@ class UserController extends Controller
     public function createUser()
     {
         $user = (new User)->hydrate(request()->post)->persist();
+
+        $this->message('success', 'User ' . $user->name . ' successfully created');
+
         redirect($user->id . '/profile');
     }
     
@@ -37,17 +40,18 @@ class UserController extends Controller
     public function editUser(User $user)
     {
         $user = $user->hydrate(request()->post)->persist();
+
+        $this->message('success', 'User ' . $user->name . ' successfully edited');
+        
         redirect($user->id . '/profile');
     }
     
     public function delete(User $user)
     {
         $user->delete();
+
+        $this->message('success', 'User ' . $user->name . ' successfully deleted');
+        
         redirect('profiles');
-    }
-    
-    
-    
-    
-    
+    }    
 }

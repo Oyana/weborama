@@ -7,7 +7,7 @@ class View
     public $path;
     public $datas;
 
-    public function __construct($path, $datas = [])
+    public function __construct($path = null, $datas = [])
     {
         $this->path = $path;
         $this->datas = $datas;
@@ -35,6 +35,6 @@ class View
 
     private function renderJson()
     {
-        echo $this->datas;
+        echo json_encode($this->datas);
     }
 }

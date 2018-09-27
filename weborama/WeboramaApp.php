@@ -12,6 +12,8 @@ final class WeboramaApp extends Singletons
     //run the app
     public function run()
     {
+        session_start();
+        Messager::loadSessionMessages();
         $result = (new Router)->run();
         Displayer::endResultView($result);
         Displayer::render();

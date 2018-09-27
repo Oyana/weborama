@@ -30,6 +30,9 @@ function redirect($routename, $savedDatas = array())
     if (!empty($savedDatas)) {
         $_SESSION['redirect'] = $savedDatas;
     }
+    
+    $_SESSION['messages'] = Weborama\Messages\Messager::$messages;
+    
     header('location:'.SITE_URL . '/' . $routename);
 }
 
